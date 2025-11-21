@@ -7,14 +7,16 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Game from "./pages/Game";
 import NotFound from "./pages/NotFound";
+import QTablePanel from "./QTablePanel";
 
 const queryClient = new QueryClient();
-
+const currentUserId = window.localStorage.getItem("email") || "guest";
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <QTablePanel userId={currentUserId} showDemoControls={true}/>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />

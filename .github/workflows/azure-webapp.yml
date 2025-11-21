@@ -1,0 +1,43 @@
+name: Deploy to Azure App Service
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install Python dependencies
+        run: pip install -r rl_service/requirements.txt
+
+      - name: Install frontend deps
+        run: npm install
+
+      - name: Build frontend (Vite)
+        run: npm run build
+
+      - name: Make startup script executable
+        run: chmod +x startup.sh
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ai-game-app   # <--- CHANGE THIS
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: .
